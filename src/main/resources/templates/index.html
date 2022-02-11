@@ -1,17 +1,95 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/layout}">
 
 <main layout:fragment="content">
-    <div>
-        <div class="row justify-content-center mx-0 p-0">
-            <img class="col-auto" th:src="@{/img/plzIceCream.jpg}">
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+    <!--아임포트-->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <div class="m-auto" id="container">
+        <!--모바일반응형사이즈도만들기(조건은 height 1921이상) 위에 width만 1040px로 바꾸면 될듯-->
+        <div class="row justify-content-center p-0">
+            <img class="col-auto w-100 mx-0 p-0" th:src="@{/img/plzIceCream.jpg}" style="
+            margin-top:3.5rem;
+            border-radius:1rem;
+            box-shadow: rgb(0 0 0 / 55%) 10px 10px 20px 0px;
+            ">
         </div>
         <div class="row justify-content-center mt-4 mx-0 p-0">
-            <a class="btn btn-primary col-auto" href="#" role="button">사주기</a>
+            <div class="row form-floating justify-content-between m-0 p-0">
+                <input class="col-4" type="text" placeholder="후원자명" name="name" id="name" required>
+                <div class="row col-4">
+                    <input class="col" type="number" placeholder="후원금액" name="amount" id="amount" required>
+                    <select class="col-auto p-0" onchange="amount()" name="number" id="number">
+                        <option selected>자유</option>
+                        <option value="500">1개</option>
+                        <option value="1000">2개</option>
+                        <option value="5000">10개</option>
+                        <option value="10000">20개</option>
+                    </select>
+                    <script>
+                        function amount() {
+                            if(document.getElementById('number').value == 500){
+                                document.getElementById('amount').value="500";
+                            }else if(document.getElementById('number').value == 1000){
+                                document.getElementById('amount').value="1000";
+                            }else if(document.getElementById('number').value == 5000){
+                                document.getElementById('amount').value="5000";
+                            }else if(document.getElementById('number').value == 10000){
+                                document.getElementById('amount').value="10000";
+                            }
+                        }
+                    </script>
+                </div>
+                <div class="row col-4 justify-content-end">
+                    <a class="btn btn-primary col-auto me-2" onclick="payment()" role="button">후원하기</a>
+                    <a class="btn btn-success col-auto" href="#" role="button">관리자용</a>
+                </div>
+            </div>
+            <div class="row justify-content-between mt-3 p-0">
+                <textarea name="subject" placeholder="응원 한 마디" id="subject" style="height:29vh;"></textarea>
+            </div>
+            <div class="row justify-content-center mt-2 p-0">
+                <a class="btn btn-secondary col" href="https://open.kakao.com/o/sJTVzVQd" role="button">문제 발생 시 여기로 연락 주세요</a>
+            </div>
         </div>
     </div>
+
+    <script>
+        function payment() {
+
+  	IMP.init('imp51386305');
+  	//결제시 전달되는 정보
+	IMP.request_pay({
+			    pg : 'inicis',
+			    pay_method : 'card',
+			    merchant_uid : 'merchant_' + new Date().getTime(),
+			    name : '아이스크림 후원'/*상품명*/,
+			    amount : 500/*상품 가격*/,
+			    buyer_name : '구매자이름',
+			}, function(rsp) {
+				var result = '';
+			    if ( rsp.success ) {
+			        var msg = '결제가 완료되었습니다.';
+			        msg += '고유ID : ' + rsp.imp_uid;
+			        msg += '상점 거래ID : ' + rsp.merchant_uid;
+			        msg += '결제 금액 : ' + rsp.paid_amount;
+			        msg += '카드 승인번호 : ' + rsp.apply_num;
+			        result ='0';
+			    } else {
+			        var msg = '결제에 실패하였습니다.';
+			        msg += '에러내용 : ' + rsp.error_msg;
+			        result ='1';
+			    }
+			    if(result=='0') {
+			    	location.href= $.getContextPath()+"/Cart/Success";
+			    }
+			    alert(msg);
+			});
+		}
+    </script>
+
 </main>
 
 </html>
