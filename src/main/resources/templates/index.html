@@ -44,7 +44,13 @@
                 </div>
                 <div class="row col-4 justify-content-end">
                     <a class="btn btn-primary col-auto me-2" onclick="payment()" role="button">후원하기</a>
-                    <a class="btn btn-success col-auto" href="#" role="button">관리자용</a>
+                    <a class="btn btn-success col-auto" onclick="admin()" role="button">관리자용</a>
+                    <script>
+                        function admin() {
+                            var code = prompt("관리자용 코드를 입력해주세요.","");
+
+                        }
+                    </script>
                 </div>
             </div>
             <div class="row justify-content-between mt-3 p-0">
@@ -66,7 +72,7 @@
 			    pay_method : 'card',
 			    merchant_uid : 'merchant_' + new Date().getTime(),
 			    name : '아이스크림 후원'/*상품명*/,
-			    amount : 500/*상품 가격*/,
+			    amount : 100/*상품 가격*/,
 			    buyer_name : '구매자이름',
 			}, function(rsp) {
 				var result = '';
@@ -83,7 +89,7 @@
 			        result ='1';
 			    }
 			    if(result=='0') {
-			    	location.href= $.getContextPath()+"/Cart/Success";
+			    alert("후원에 성공했습니다.");
 			    }
 			    alert(msg);
 			});
